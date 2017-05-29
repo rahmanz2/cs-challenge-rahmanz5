@@ -1,4 +1,4 @@
-FleetCarma code challenge.
+FleetCarma code challenge changes.
 
 Improvements:
 added a metadata file containing four lines:
@@ -20,7 +20,7 @@ Perhaps this could be improved more in the future as Edmund updates their API.
 
 Other:
 
-I added newtonsoft.json and created classes for the Makes, Models etc. I felt like this made some program logic slightly easier for me and could be useful in the future, although it took ime to get it fully working.
+I added newtonsoft.json and created classes for the Makes, Models etc. I felt like this made some program logic slightly easier for me and could be useful in the future, although it took time to get it fully working.
 
 
 

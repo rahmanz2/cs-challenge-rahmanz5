@@ -1,29 +1,21 @@
-# README #
+FleetCarma code challenge.
 
-As part of your application to FleetCarma, we ask that you complete the following challenge. 
+Improvements:
+added a metadata file containing three lines:
+1) the first line contains the private key for the edmund api (you should replace it with yours)
+2) the second line contains the year for which you would like to the run the utility
+3) the third line is a boolean variable; when set to true, the utility will always make an api call and pull new make data instead of reading things from the disk if you already have them (saves precious api calls)
+4) the fourth line is a boolean variable; when set to true, the utility will always make an api call and pull new style data instead of reading things from the disk if you already have them
 
-### Task 1 - Fix some ugly code ###
+This way you don't need to modify the code for next year, and can even re run the utility for previous years. Furthermore, it is easily extensible, saves precious api call quotas, and concentrates program metadata logic into one place. 
 
-Imagine a tool written many years ago by an unknown person, which has since been used every year to query the Edmunds api to determine what new electric vehicles are on the market. The tool is not written well, needs a few tweaks every year but works well enough. 
+The utility also organizes data into folders based on years. The make data file name is hardcoded to "edmunds-get-makes.txt", and the style data file name per vehicle is hardcoded to "edumunds-styleId-full-{styleId}.txt"
 
-Your task as a professional developer is to clean up this tool and make it something you can be proud of.
+Added a little extra console logs to indicate what is happening on the utility. You have to hit a key to exit the application once the "Check file output for more detail" appears on the console.
 
-*Note: This is NOT a representation of our codebase to be clear. We did have fun crafting this beauty however ;)*
+Reduced the total number of api calls.
+Now only one api call is made to save the style and determine whether the vehicle is electric, per styleId.
 
-### Task 2 - Write a report ###
+Perhaps this could be improved more in the future as Edmund updates their API.
 
-Write a document explaining some of the improvements you made to the code, and why you did so.
-
-### What do I need? ###
-
-* [.NET Core](https://www.microsoft.com/net/core) - any platform
-* Edmunds API key - get one here [http://developer.edmunds.com/]( http://developer.edmunds.com/) 
-*Do note the API rate limitation of 5 calls per hour and plan for that when developing.* 
-
-### Who do I talk to? ###
-
-If you have any questions you can email hr@fleetcarma.com 
-
-### Build status ###
-[![Build status](https://ci.appveyor.com/api/projects/status/lsvryi8ea0n6b4xo?svg=true)](https://ci.appveyor.com/project/fleetcarma/cs-challenge)
 

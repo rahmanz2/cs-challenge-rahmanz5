@@ -9,73 +9,107 @@ namespace ElectricCarSearcher
 {
   public class Program
   {
-    public static string key = File.ReadAllText("./key.txt");
+    public static string[] items = File.ReadAllLines("./metadata.txt");
 
     public static void Main(string[] args)
     {
       // Get all vehicles for 2017 
+      string key = items[0];
+      string year = items[1];
+      string apiCallOnly = items[2];
 
-      string allMakes = File.ReadAllText("./edmunds-get.txt");
-      string responseAsString = null;
+      Console.WriteLine("Getting all vehicles for 2017...");
+      string makesPath = string.Concat(new string[] { "./", year, "/edmunds-get-makes.txt" });
+      string allMakes = "";
 
-      if (string.IsNullOrEmpty(allMakes))
+      try
       {
+        allMakes = File.ReadAllText(makesPath);
+      }
+      catch (Exception ex)
+      {
+        allMakes = null;
+      }
 
+      string responseAsString = allMakes;
+
+      if (string.IsNullOrEmpty(allMakes) || apiCallOnly ==  "true")
+      {
+        Console.WriteLine("No 2017 list of makes on disk OR apiCall was set to true in metadata... making API call");
         var client = new HttpClient();
-        client.BaseAddress = new Uri(string.Format("https://api.edmunds.com/api/vehicle/v2/makes?state=new&year=2017&view=basic&fmt=json&api_key={0}", key));
+        client.BaseAddress = new Uri(string.Format("https://api.edmunds.com/api/vehicle/v2/makes?state=new&year={0}&view=basic&fmt=json&api_key={1}", year, key));
         var response = client.GetAsync("").Result;
 
         responseAsString = response.Content.ReadAsStringAsync().Result;
-        File.WriteAllText("./edmunds-get.txt", responseAsString);
+        try
+        {
+          Directory.CreateDirectory(year);
+          File.WriteAllText(makesPath, responseAsString);
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine("Error saving API data to file...will continue");
+        }
       }
-      else {
-        responseAsString = allMakes;
+      else
+      {
+        Console.WriteLine("Found a disk version of {0} make data", year);
       }
 
-      // get all nice make names - note that the nice make name is always before this string: ","models" 
       Makes makes = JsonConvert.DeserializeObject<Makes>(responseAsString);
+      List<string> styleIds = new List<string>();
 
-      //// get all styles for all makes
-      //var response2 = client2.GetAsync("").Result;
-
-      //var response2AsString  = response2.Content.ReadAsStringAsync().Result;
-
-      //var indexOfId = response2AsString.IndexOf("id\":");
-      //while(indexOfId > 0){
-      //    var styleID = response2AsString.Substring(indexOfId+4,response2AsString.IndexOf(',', indexOfId) - indexOfId-4);
-
-      //    try
-      //    {
-      //        InspectEngine(styleID);
-      //        SaveVehicle(styleID);
-      //    }
-      //    catch{}
-      //    indexOfId = response2AsString.IndexOf("id\":",indexOfId+4);
-      //}
-
-
+      // get all styles for all makes
+      Console.WriteLine("Finding all unique styleIds across all makes and models...");
+      foreach (var make in makes.makes)
+      {
+        foreach (var model in make.models)
+        {
+          if (styleIds.Contains(model.years[0].id))
+          {
+            Console.WriteLine("Duplicate style Id {0}, {1}, {2}, {3}, skip API call for detailed style", model.years[0].id, model.years[0].year, model.name, model.niceName);
+          }
+          else
+          {
+            styleIds.Add(model.years[0].id);
+            InspectEngine(model.years[0].id, key, year, apiCallOnly);
+          }
+        }
+      }
+      Console.WriteLine("Check file output for more detail");
+      Console.ReadLine();
     }
 
-    private static void InspectEngine(object styleID)
+    private static void InspectEngine(string styleID, string key, string year, string apiCallOnly)
     {
+      string localStyle = "";
 
-      //var client = new HttpClient();
-      //client.BaseAddress = new Uri(string.Format("https://api.edmunds.com/api/vehicle/v2/styles/{1}/engines?availability=standard&fmt=json&api_key={0}", key, styleID));
-      //var response = client.GetAsync("").Result;
+      try
+      {
+        localStyle = File.ReadAllText("./edmunds-styleId-full-" + styleID);
+      } catch (Exception ex) {
+        localStyle = null;
+      }
+      
+      string responseString = localStyle;
 
-      //var responseAsString = response.Content.ReadAsStringAsync().Result;
+      string stylePath = string.Concat(new string[] { "./", year, "./edmunds-styleId-full-", styleID, ".txt" });
 
-      //if(responseAsString.Contains("\"fuelType\":\"electric\"") == false)
-      //    throw new ArgumentException();
-    }
+      if (string.IsNullOrEmpty(localStyle) || string.Compare(apiCallOnly, "true") == 0)
+      {
+        var client = new HttpClient();
+        client.BaseAddress = new Uri(string.Format("https://api.edmunds.com/api/vehicle/v2/styles/{1}?view=full&fmt=json&api_key={0}", key, styleID));
+        var response = client.GetAsync("").Result;
 
-    private static void SaveVehicle(object styleID)
-    {
-      //var client = new HttpClient();
-      //client.BaseAddress = new Uri(string.Format("https://api.edmunds.com/api/vehicle/v2/styles/{1}?view=full&fmt=json&api_key={0}", key, styleID));
-      //var response = client.GetAsync("").Result;
+        responseString = response.Content.ReadAsStringAsync().Result;
 
-      //Console.WriteLine(response.Content.ReadAsStringAsync().Result.Substring(0,200));            
+        File.WriteAllText(stylePath, responseString);
+      }
+
+      if (responseString.Contains("\"fuelType\":\"electric\"") == true)
+      {
+        Console.WriteLine(responseString.Substring(0, 200));
+      }
     }
   }
 }

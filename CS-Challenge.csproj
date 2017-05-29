@@ -9,8 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="2017\**" />
+    <EmbeddedResource Remove="2017\**" />
+    <None Remove="2017\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove=".gitignore" />
     <None Remove="appveyor.yml" />
+    <None Remove="edmunds-get-makes.txt" />
     <None Remove="edmunds-get-styles.txt" />
     <None Remove="edmunds-get.txt" />
     <None Remove="key.txt" />

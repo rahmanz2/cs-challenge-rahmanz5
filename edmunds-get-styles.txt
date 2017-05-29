@@ -1,6 +1,0 @@
-{
-   "status":"FORBIDDEN",
-   "errorType":"AUTHENTICATION_ERROR",
-   "message":"Account Over Rate Limit",
-   "moreInfoUrl":"http://developer.edmunds.com"
-}

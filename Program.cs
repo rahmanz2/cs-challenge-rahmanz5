@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.IO;
 
 namespace ElectricCarSearcher
 {
     public class Program
     {
-        public static string key = "YOUR EDMUNDS KEY";
+        public static string key = "c9h58g436abtrbwxxgqr7pst";
 
         public static void Main(string[] args)
         {
@@ -17,6 +18,8 @@ namespace ElectricCarSearcher
             var response = client.GetAsync("").Result;
 
             var responseAsString = response.Content.ReadAsStringAsync().Result;
+
+            FileStream f = new FileStream("edmunds-get.txt", FileMode.Open, FileMode.Write);
         
             // get all nice make names - note that the nice make name is always before this string: ","models" 
             var identifier = "\",\"models\"";

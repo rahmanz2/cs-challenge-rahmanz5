@@ -16,7 +16,8 @@ namespace ElectricCarSearcher
       // Get all vehicles for 2017 
       string key = items[0];
       string year = items[1];
-      string apiCallOnly = items[2];
+      string forceAPICallForMakeData = items[2];
+      string forceAPICallForStyleData = items[3];
 
       Console.WriteLine("Getting all vehicles for 2017...");
       string makesPath = string.Concat(new string[] { "./", year, "/edmunds-get-makes.txt" });
@@ -33,7 +34,7 @@ namespace ElectricCarSearcher
 
       string responseAsString = allMakes;
 
-      if (string.IsNullOrEmpty(allMakes) || apiCallOnly ==  "true")
+      if (string.IsNullOrEmpty(allMakes) || forceAPICallForMakeData ==  "true")
       {
         Console.WriteLine("No 2017 list of makes on disk OR apiCall was set to true in metadata... making API call");
         var client = new HttpClient();
@@ -72,7 +73,7 @@ namespace ElectricCarSearcher
           else
           {
             styleIds.Add(model.years[0].id);
-            InspectEngine(model.years[0].id, key, year, apiCallOnly);
+            InspectEngine(model.years[0].id, key, year, forceAPICallForStyleData);
           }
         }
       }

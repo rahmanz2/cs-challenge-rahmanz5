@@ -1,7 +1,7 @@
 FleetCarma code challenge.
 
 Improvements:
-added a metadata file containing three lines:
+added a metadata file containing four lines:
 1) the first line contains the private key for the edmund api (you should replace it with yours)
 2) the second line contains the year for which you would like to the run the utility
 3) the third line is a boolean variable; when set to true, the utility will always make an api call and pull new make data instead of reading things from the disk if you already have them (saves precious api calls)

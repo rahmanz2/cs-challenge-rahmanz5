@@ -2,9 +2,23 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <AssemblyName>CS-Challenge</AssemblyName>
+    <AssemblyName>ElectricCarSearcher</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>CS-Challenge</PackageId>
+    <RootNamespace>ElectricCarSearcher</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove=".gitignore" />
+    <None Remove="appveyor.yml" />
+    <None Remove="edmunds-get-styles.txt" />
+    <None Remove="edmunds-get.txt" />
+    <None Remove="key.txt" />
+    <None Remove="README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+  </ItemGroup>
 
 </Project>
